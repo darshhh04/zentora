@@ -9,7 +9,7 @@
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
         :root {
-          --primary-color: #3b82f6; 
+          --primary-color: #3b82f6;
           --primary-color-dark: #2563eb;
           --secondary-color: #f3f4f6; 
           --text-dark: #1f2937; 
@@ -78,9 +78,14 @@
         }
 
         .logo {
-          font-size: 1.75rem;
+          font-size: 1.5rem;
           font-weight: 700;
           color: var(--text-dark);
+        }
+        
+        .logo span {
+            font-weight: 400;
+            color: var(--text-light);
         }
 
         img {
@@ -179,6 +184,7 @@
           line-height: 1.2;
         }
 
+        /* Modern Light Cards */
         .light-card {
             background-color: var(--white);
             border-radius: 20px;
@@ -414,7 +420,7 @@
   <body>
     <nav>
       <div class="nav__content">
-        <a href="#" class="logo">Zentora</a>
+        <a href="#" class="logo">Zentora <span>| Travel & Tours</span></a>
         <div class="nav__menu__btn" id="menu-btn">
           <i class="ri-menu-line"></i>
         </div>
@@ -434,8 +440,8 @@
     <header id="home">
       <div class="header__container">
         <div class="header__content">
-          <p>Welcome to Our Tourism Guide</p>
-          <h1>Discover the Most Beautiful Places on Earth!</h1>
+          <p>Your Journey Begins Here</p>
+          <h1>Explore the World with Zentora</h1>
           <div class="header__btns">
             <a href="book.html"><button class="btn">Book A Trip Now</button></a>
           </div>
@@ -493,7 +499,7 @@
           <div class="package__details">
             <h4>Switzerland</h4>
             <p>Starting from <strong>$899</strong></p>
-            <a href="book.html"><button class="btn">Book Now</button></a>
+            <button class="btn book-now-btn" data-destination="Switzerland" data-price="899">Book Now</button>
           </div>
         </div>
         <div class="package__card light-card">
@@ -501,7 +507,7 @@
           <div class="package__details">
             <h4>Japan</h4>
             <p>Starting from <strong>$1099</strong></p>
-            <a href="book.html"><button class="btn">Book Now</button></a>
+            <button class="btn book-now-btn" data-destination="Tokyo, Japan" data-price="1099">Book Now</button>
           </div>
         </div>
         <div class="package__card light-card">
@@ -509,7 +515,7 @@
           <div class="package__details">
             <h4>Greece</h4>
             <p>Starting from <strong>$799</strong></p>
-            <a href="book.html"><button class="btn">Book Now</button></a>
+            <button class="btn book-now-btn" data-destination="Greece" data-price="799">Book Now</button>
           </div>
         </div>
         <div class="package__card light-card">
@@ -517,7 +523,7 @@
           <div class="package__details">
             <h4>Dubai</h4>
             <p>Starting from <strong>$699</strong></p>
-            <a href="book.html"><button class="btn">Book Now</button></a>
+            <button class="btn book-now-btn" data-destination="Dubai, UAE" data-price="699">Book Now</button>
           </div>
         </div>
       </div>
@@ -535,7 +541,7 @@
           </div>
           <div class="info-item">
             <i class="ri-mail-fill"></i>
-            <span>contact@dreamdestination.com</span>
+            <span>contact@zentora.com</span>
           </div>
           <div class="info-item">
             <i class="ri-phone-fill"></i>
@@ -566,7 +572,7 @@
     </footer>
 
     <script>
-      // Script to show a success message on contact form submission
+      // message after submit
       const contactForm = document.getElementById('contact-form');
       const contactResponse = document.getElementById('contact-response');
       contactForm.addEventListener('submit', function (event) {
@@ -583,6 +589,20 @@
       const navLinks = document.getElementById('nav-links');
       menuBtn.addEventListener('click', () => {
         navLinks.classList.toggle('open');
+      });
+      
+      // Handle package booking clicks
+      const bookNowButtons = document.querySelectorAll('.book-now-btn');
+      bookNowButtons.forEach(button => {
+          button.addEventListener('click', () => {
+              const destination = button.dataset.destination;
+              const price = button.dataset.price;
+              
+              //store package detail
+              localStorage.setItem('selectedPackage', JSON.stringify({ destination, price }));
+              
+              window.location.href = 'book.html';
+          });
       });
     </script>
   </body>

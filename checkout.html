@@ -16,6 +16,8 @@
             --text-light: #6b7280;
             --white: #ffffff;
             --border-color: #e5e7eb;
+            --success-bg: #dbeafe;
+            --success-text: #1e40af;
         }
 
         body {
@@ -43,20 +45,25 @@
         }
         .bookings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
         }
         .booking-card {
             background-color: var(--white);
             border-radius: 20px;
             border: 1px solid var(--border-color);
-            padding: 25px;
             box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
         .booking-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        .card-content {
+            padding: 25px;
+            flex-grow: 1;
         }
         .booking-card h3 {
             font-size: 1.5rem;
@@ -82,6 +89,34 @@
             color: var(--text-dark);
             font-weight: 600;
         }
+        .card-footer {
+            padding: 1rem 25px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--secondary-color);
+            border-radius: 0 0 20px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .payment-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .payment-btn:hover {
+            background-color: var(--primary-color-dark);
+        }
+        
         .no-bookings {
             text-align: center;
             padding: 50px;
@@ -117,6 +152,101 @@
             text-align: center;
             margin-top: 40px;
         }
+        
+        /* Payment Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+        .modal-body .form-group {
+            margin-bottom: 1rem;
+        }
+        .modal-body label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        .modal-body input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+        .payment-amount {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        .payment-amount strong {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        .pay-now-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .payment-success-msg {
+            text-align: center;
+            padding: 1rem;
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-radius: 10px;
+            margin-top: 1rem;
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -128,11 +258,38 @@
         </div>
 
         <div id="bookings-container">
-           
+            <!-- Bookings will be dynamically inserted here by JavaScript -->
         </div>
 
         <div class="home-link-container">
             <a href="index.html" class="home-link">Back to Home Page</a>
+        </div>
+    </div>
+
+    <!-- Payment Modal Structure -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Complete Your Payment</h3>
+                <i class="ri-close-line close-modal" id="close-modal-btn"></i>
+            </div>
+            <div class="modal-body">
+                <p class="payment-amount">Total Amount: <strong id="payment-total"></strong></p>
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="card-name">Name on Card</label>
+                        <input type="text" id="card-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="0000 0000 0000 0000" required>
+                    </div>
+                    <button type="submit" class="pay-now-btn">Pay Now</button>
+                </form>
+                <div class="payment-success-msg" id="payment-success">
+                    Payment successful! Thank you for booking with Zentora.
+                </div>
+            </div>
         </div>
     </div>
 
@@ -145,7 +302,7 @@
                 const bookingsGrid = document.createElement('div');
                 bookingsGrid.className = 'bookings-grid';
 
-                bookings.forEach(booking => {
+                bookings.forEach((booking, index) => {
                     const card = document.createElement('div');
                     card.className = 'booking-card';
 
@@ -159,13 +316,19 @@
                     const extras = Array.isArray(booking.extras) ? booking.extras.join(', ') : (booking.extras || 'None');
 
                     card.innerHTML = `
-                        <h3>${sanitize(booking.destination)}</h3>
-                        <p><i class="ri-user-line"></i><strong>Name:</strong> ${sanitize(booking.name)}</p>
-                        <p><i class="ri-calendar-2-line"></i><strong>Dates:</strong> ${sanitize(booking.travel_date)} to ${sanitize(booking.return_date)}</p>
-                        <p><i class="ri-group-line"></i><strong>Travelers:</strong> ${sanitize(booking.travelers)}</p>
-                        <p><i class="ri-suitcase-line"></i><strong>Type:</strong> ${sanitize(booking.travel_type)}</p>
-                        <p><i class="ri-add-line"></i><strong>Extras:</strong> ${sanitize(extras)}</p>
-                        ${booking.message ? `<p><i class="ri-chat-1-line"></i><strong>Comments:</strong> ${sanitize(booking.message)}</p>` : ''}
+                        <div class="card-content">
+                            <h3>${sanitize(booking.destination)}</h3>
+                            <p><i class="ri-user-line"></i><strong>Name:</strong> ${sanitize(booking.name)}</p>
+                            <p><i class="ri-calendar-2-line"></i><strong>Dates:</strong> ${sanitize(booking.travel_date)} to ${sanitize(booking.return_date)}</p>
+                            <p><i class="ri-group-line"></i><strong>Travelers:</strong> ${sanitize(booking.travelers)}</p>
+                            <p><i class="ri-suitcase-line"></i><strong>Type:</strong> ${sanitize(booking.travel_type)}</p>
+                            <p><i class="ri-add-line"></i><strong>Extras:</strong> ${sanitize(extras)}</p>
+                            ${booking.message ? `<p><i class="ri-chat-1-line"></i><strong>Comments:</strong> ${sanitize(booking.message)}</p>` : ''}
+                        </div>
+                        <div class="card-footer">
+                            <span class="price">$${booking.price}</span>
+                            <button class="payment-btn" data-price="${booking.price}" data-index="${index}">Proceed to Payment</button>
+                        </div>
                     `;
                     bookingsGrid.appendChild(card);
                 });
@@ -179,6 +342,50 @@
                     </div>
                 `;
             }
+
+            // Payment Modal Logic
+            const paymentModal = document.getElementById('payment-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const paymentForm = document.getElementById('payment-form');
+            const paymentTotal = document.getElementById('payment-total');
+            const paymentSuccessMsg = document.getElementById('payment-success');
+
+            document.querySelectorAll('.payment-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const price = this.dataset.price;
+                    paymentTotal.textContent = `$${price}`;
+                    paymentModal.classList.add('active');
+                });
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                paymentModal.classList.remove('active');
+                paymentSuccessMsg.style.display = 'none';
+                paymentForm.style.display = 'block';
+            });
+            
+            paymentModal.addEventListener('click', (e) => {
+                if (e.target === paymentModal) {
+                    paymentModal.classList.remove('active');
+                    paymentSuccessMsg.style.display = 'none';
+                    paymentForm.style.display = 'block';
+                }
+            });
+
+            paymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                paymentForm.style.display = 'none';
+                paymentSuccessMsg.style.display = 'block';
+                
+                // After 3 seconds, close the modal
+                setTimeout(() => {
+                    paymentModal.classList.remove('active');
+                    // Reset form for next time
+                    paymentForm.style.display = 'block';
+                    paymentSuccessMsg.style.display = 'none';
+                    paymentForm.reset();
+                }, 3000);
+            });
         });
     </script>
 </body>

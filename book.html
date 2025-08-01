@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Book a Trip - Zentora</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
   <style>
     @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
     :root {
         --primary-color: #3b82f6;
         --primary-color-dark: #2563eb;
-        --secondary-color: #f9fafb;
+        --secondary-color: #f3f4f6;
         --text-dark: #1f2937;
         --text-light: #6b7280;
         --white: #ffffff;
@@ -24,27 +25,94 @@
       margin: 0;
       padding: 40px 20px;
     }
+    
+    .page-container {
+        max-width: 1100px;
+        margin: auto;
+    }
+
     .page-header {
         text-align: center;
         margin-bottom: 2rem;
     }
     .page-header .logo {
         font-size: 2rem;
-        font-weight: bold;
+        font-weight: 700;
         color: var(--text-dark);
         text-decoration: none;
     }
-    .booking-form {
-      max-width: 600px;
-      margin: 20px auto;
-      background-color: var(--white);
-      padding: 40px;
-      border-radius: 20px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    
+    .page-header .logo span {
+        font-weight: 400;
+        color: var(--text-light);
     }
+
+    .booking-layout {
+        display: grid;
+        grid-template-columns: 1fr 1.5fr;
+        gap: 2rem;
+        align-items: flex-start;
+        background-color: var(--white);
+        padding: 2rem;
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    .booking-info h3 {
+        margin-top: 0;
+        font-size: 1.75rem;
+        color: var(--text-dark);
+    }
+
+    .booking-info p {
+        color: var(--text-light);
+        line-height: 1.7;
+        margin-bottom: 2rem;
+    }
+    
+    .destination-showcase .dest-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border-radius: 15px;
+        transition: background-color 0.3s;
+    }
+    
+    .destination-showcase .dest-card:hover {
+        background-color: var(--secondary-color);
+    }
+
+    .destination-showcase img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+    
+    .destination-showcase .dest-info h4 {
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+    }
+
+    .destination-showcase .dest-info p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: var(--text-light);
+    }
+
+
+    .booking-form {
+      padding: 2rem;
+      border-radius: 20px;
+      background-color: #f9fafb;
+    }
+    
     .booking-form h2 {
       text-align: center;
+      margin-top: 0;
       margin-bottom: 30px;
       font-size: 24px;
       color: var(--text-dark);
@@ -86,7 +154,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background-color: var(--secondary-color);
+      background-color: var(--white);
       padding: 10px;
       border-radius: 8px;
       cursor: pointer;
@@ -114,102 +182,139 @@
     .submit-btn:hover {
       background-color: var(--primary-color-dark);
     }
-    .message {
-        text-align: center;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 8px;
-        font-weight: bold;
-    }
-    .message.success {
-        background-color: #dbeafe; 
-        color: #1e40af; 
+
+    @media (max-width: 900px) {
+        .booking-layout {
+            grid-template-columns: 1fr;
+        }
     }
   </style>
 </head>
 <body>
 
-<header class="page-header">
-    <a href="index.html" class="logo">Zentora</a>
-</header>
+<div class="page-container">
+    <header class="page-header">
+        <a href="index.html" class="logo">Zentora <span>| Travel & Tours</span></a>
+    </header>
 
-<form id="booking-form" class="booking-form">
-  <h2>Book Your Next Adventure</h2>
-  <div id="form-message" class="message" style="display: none;"></div>
-  <div class="form-group">
-    <label for="name">Full Name *</label>
-    <input type="text" id="name" name="name" required />
-  </div>
+    <div class="booking-layout">
+        <div class="booking-info">
+            <h3>Plan Your Perfect Getaway</h3>
+            <p>Fill in your details to book your next adventure. Our team is dedicated to crafting the perfect itinerary for you. Choose from our popular destinations or let us know where you'd like to go!</p>
+            <div class="destination-showcase">
+                <div class="dest-card">
+                    <img src="images/paris.jpg" alt="Paris">
+                    <div class="dest-info">
+                        <h4>Paris, France</h4>
+                        <p>The city of love and lights.</p>
+                    </div>
+                </div>
+                <div class="dest-card">
+                    <img src="images/japan.jpg" alt="Japan">
+                    <div class="dest-info">
+                        <h4>Tokyo, Japan</h4>
+                        <p>A vibrant blend of tradition and future.</p>
+                    </div>
+                </div>
+                <div class="dest-card">
+                    <img src="images/bali.jpg" alt="Bali">
+                    <div class="dest-info">
+                        <h4>Bali, Indonesia</h4>
+                        <p>An island paradise for relaxation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-  <div class="form-group">
-    <label for="email">Email Address *</label>
-    <input type="email" id="email" name="email" required />
-  </div>
+        <form id="booking-form" class="booking-form">
+          <div class="form-group">
+            <label for="name">Full Name *</label>
+            <input type="text" id="name" name="name" required />
+          </div>
 
-  <div class="form-group">
-    <label for="phone">Contact Number *</label>
-    <input type="tel" id="phone" name="phone" required />
-  </div>
+          <div class="form-group">
+            <label for="email">Email Address *</label>
+            <input type="email" id="email" name="email" required />
+          </div>
 
-  <div class="form-group">
-    <label for="destination">Destination *</label>
-    <select id="destination" name="destination" required>
-      <option value="">-- Select --</option>
-      <option>Paris, France</option>
-      <option>Tokyo, Japan</option>
-      <option>Bali, Indonesia</option>
-      <option>Dubai, UAE</option>
-      <option>Rome, Italy</option>
-      <option>Switzerland</option>
-      <option>Greece</option>
-    </select>
-  </div>
+          <div class="form-group">
+            <label for="phone">Contact Number *</label>
+            <input type="tel" id="phone" name="phone" required />
+          </div>
 
-  <div class="form-group">
-    <label for="travel-date">Travel Start Date *</label>
-    <input type="date" id="travel-date" name="travel_date" required />
-  </div>
+          <div class="form-group">
+            <label for="destination">Destination *</label>
+            <select id="destination" name="destination" required>
+              <option value="">-- Select --</option>
+              <option value="Paris, France">Paris, France</option>
+              <option value="Tokyo, Japan">Tokyo, Japan</option>
+              <option value="Bali, Indonesia">Bali, Indonesia</option>
+              <option value="Dubai, UAE">Dubai, UAE</option>
+              <option value="Rome, Italy">Rome, Italy</option>
+              <option value="Switzerland">Switzerland</option>
+              <option value="Greece">Greece</option>
+            </select>
+          </div>
 
-  <div class="form-group">
-    <label for="return-date">Return Date *</label>
-    <input type="date" id="return-date" name="return_date" required />
-  </div>
+          <div class="form-group">
+            <label for="travel-date">Travel Start Date *</label>
+            <input type="date" id="travel-date" name="travel_date" required />
+          </div>
 
-  <div class="form-group">
-    <label for="travelers">Number of Travelers *</label>
-    <input type="number" id="travelers" name="travelers" min="1" required />
-  </div>
+          <div class="form-group">
+            <label for="return-date">Return Date *</label>
+            <input type="date" id="return-date" name="return_date" required />
+          </div>
 
-  <div class="form-group">
-    <label for="travel-type">Travel Type</label>
-    <select id="travel-type" name="travel_type">
-      <option>Solo</option>
-      <option>Couple</option>
-      <option>Family</option>
-      <option>Group</option>
-      <option>Business</option>
-    </select>
-  </div>
+          <div class="form-group">
+            <label for="travelers">Number of Travelers *</label>
+            <input type="number" id="travelers" name="travelers" min="1" required />
+          </div>
 
-  <div class="form-group">
-    <label>Extra Services:</label>
-    <div class="checkbox-group">
-        <label><input type="checkbox" name="extras" value="Hotel"> Hotel</label>
-        <label><input type="checkbox" name="extras" value="Guide"> Tour Guide</label>
-        <label><input type="checkbox" name="extras" value="Meals"> Meals</label>
-        <label><input type="checkbox" name="extras" value="Transport"> Transport</label>
+          <div class="form-group">
+            <label for="travel-type">Travel Type</label>
+            <select id="travel-type" name="travel_type">
+              <option>Solo</option>
+              <option>Couple</option>
+              <option>Family</option>
+              <option>Group</option>
+              <option>Business</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Extra Services:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="extras" value="Hotel"> Hotel</label>
+                <label><input type="checkbox" name="extras" value="Guide"> Tour Guide</label>
+                <label><input type="checkbox" name="extras" value="Meals"> Meals</label>
+                <label><input type="checkbox" name="extras" value="Transport"> Transport</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Additional Comments</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Submit & View Booking</button>
+        </form>
     </div>
-  </div>
-
-  <div class="form-group">
-    <label for="message">Additional Comments</label>
-    <textarea id="message" name="message" rows="4"></textarea>
-  </div>
-
-  <button type="submit" class="submit-btn">Submit Booking</button>
-</form>
+</div>
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+       
+        const selectedPackage = JSON.parse(localStorage.getItem('selectedPackage'));
+        if (selectedPackage) {
+            const destinationSelect = document.getElementById('destination');
+            
+            destinationSelect.value = selectedPackage.destination;
+            
+            localStorage.removeItem('selectedPackage');
+        }
+    });
+
     document.getElementById('booking-form').addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -225,20 +330,25 @@
                 bookingData[key] = value;
             }
         });
+        
+        
+        const prices = {
+            "Switzerland": 899,
+            "Tokyo, Japan": 1099,
+            "Greece": 799,
+            "Dubai, UAE": 699,
+            "Paris, France": 950, 
+            "Bali, Indonesia": 750,
+            "Rome, Italy": 850 
+        };
+        
+        
+        bookingData.price = prices[bookingData.destination] || 999; //if default is not fouund
 
         bookings.push(bookingData);
         localStorage.setItem('tripBookings', JSON.stringify(bookings));
 
-        const formMessage = document.getElementById('form-message');
-        formMessage.textContent = 'Booking successful! Your trip is saved.';
-        formMessage.className = 'message success';
-        formMessage.style.display = 'block';
-
-        event.target.reset();
-
-        setTimeout(() => {
-            formMessage.style.display = 'none';
-        }, 5000);
+        window.location.href = 'checkout.html';
     });
 </script>
 
