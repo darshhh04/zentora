@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book a Trip - Zentora</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+    :root {
+        --primary-color: #3b82f6;
+        --primary-color-dark: #2563eb;
+        --secondary-color: #f9fafb;
+        --text-dark: #1f2937;
+        --text-light: #6b7280;
+        --white: #ffffff;
+        --border-color: #e5e7eb;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--secondary-color);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 40px 20px;
+    }
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .page-header .logo {
+        font-size: 2rem;
+        font-weight: bold;
+        color: var(--text-dark);
+        text-decoration: none;
+    }
+    .booking-form {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: var(--white);
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+    .booking-form h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+      color: var(--text-dark);
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background-color: var(--white);
+      font-size: 1rem;
+      color: var(--text-dark);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+    }
+    textarea {
+      resize: vertical;
+    }
+    .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background-color: var(--secondary-color);
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border-color);
+      transition: 0.3s;
+    }
+    .checkbox-group label:hover {
+        border-color: var(--primary-color);
+    }
+    .checkbox-group input {
+        width: auto;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary-color);
+      color: var(--white);
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+      background-color: var(--primary-color-dark);
+    }
+    .message {
+        text-align: center;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+    .message.success {
+        background-color: #dbeafe; 
+        color: #1e40af; 
+    }
+  </style>
+</head>
+<body>
+
+<header class="page-header">
+    <a href="index.html" class="logo">Zentora</a>
+</header>
+
+<form id="booking-form" class="booking-form">
+  <h2>Book Your Next Adventure</h2>
+  <div id="form-message" class="message" style="display: none;"></div>
+  <div class="form-group">
+    <label for="name">Full Name *</label>
+    <input type="text" id="name" name="name" required />
+  </div>
+
+  <div class="form-group">
+    <label for="email">Email Address *</label>
+    <input type="email" id="email" name="email" required />
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Contact Number *</label>
+    <input type="tel" id="phone" name="phone" required />
+  </div>
+
+  <div class="form-group">
+    <label for="destination">Destination *</label>
+    <select id="destination" name="destination" required>
+      <option value="">-- Select --</option>
+      <option>Paris, France</option>
+      <option>Tokyo, Japan</option>
+      <option>Bali, Indonesia</option>
+      <option>Dubai, UAE</option>
+      <option>Rome, Italy</option>
+      <option>Switzerland</option>
+      <option>Greece</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="travel-date">Travel Start Date *</label>
+    <input type="date" id="travel-date" name="travel_date" required />
+  </div>
+
+  <div class="form-group">
+    <label for="return-date">Return Date *</label>
+    <input type="date" id="return-date" name="return_date" required />
+  </div>
+
+  <div class="form-group">
+    <label for="travelers">Number of Travelers *</label>
+    <input type="number" id="travelers" name="travelers" min="1" required />
+  </div>
+
+  <div class="form-group">
+    <label for="travel-type">Travel Type</label>
+    <select id="travel-type" name="travel_type">
+      <option>Solo</option>
+      <option>Couple</option>
+      <option>Family</option>
+      <option>Group</option>
+      <option>Business</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label>Extra Services:</label>
+    <div class="checkbox-group">
+        <label><input type="checkbox" name="extras" value="Hotel"> Hotel</label>
+        <label><input type="checkbox" name="extras" value="Guide"> Tour Guide</label>
+        <label><input type="checkbox" name="extras" value="Meals"> Meals</label>
+        <label><input type="checkbox" name="extras" value="Transport"> Transport</label>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="message">Additional Comments</label>
+    <textarea id="message" name="message" rows="4"></textarea>
+  </div>
+
+  <button type="submit" class="submit-btn">Submit Booking</button>
+</form>
+
+<script>
+    document.getElementById('booking-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
+        const formData = new FormData(event.target);
+        const bookingData = {};
+        
+        formData.forEach((value, key) => {
+            if (key === 'extras') {
+                if (!bookingData[key]) bookingData[key] = [];
+                bookingData[key].push(value);
+            } else {
+                bookingData[key] = value;
+            }
+        });
+
+        bookings.push(bookingData);
+        localStorage.setItem('tripBookings', JSON.stringify(bookings));
+
+        const formMessage = document.getElementById('form-message');
+        formMessage.textContent = 'Booking successful! Your trip is saved.';
+        formMessage.className = 'message success';
+        formMessage.style.display = 'block';
+
+        event.target.reset();
+
+        setTimeout(() => {
+            formMessage.style.display = 'none';
+        }, 5000);
+    });
+</script>
+
+</body>
+</html>

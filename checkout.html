@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - Zentora</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css">
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+        :root {
+            --primary-color: #3b82f6;
+            --primary-color-dark: #2563eb;
+            --secondary-color: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --white: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            padding: 40px;
+            margin: 0;
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+        }
+        .header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        .booking-card {
+            background-color: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .booking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        .booking-card h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .booking-card p {
+            color: var(--text-light);
+            line-height: 1.7;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .booking-card p i {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        .booking-card strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        .no-bookings {
+            text-align: center;
+            padding: 50px;
+            background-color: var(--white);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .no-bookings h3 {
+            font-size: 1.8rem;
+            color: var(--text-dark);
+        }
+        .no-bookings p {
+            color: var(--text-light);
+        }
+        .no-bookings a, .home-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .no-bookings a:hover, .home-link:hover {
+            background-color: var(--primary-color-dark);
+        }
+        .home-link-container {
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="header">
+            <h2>My Bookings</h2>
+            <p>Here are the adventures you've saved on this device.</p>
+        </div>
+
+        <div id="bookings-container">
+           
+        </div>
+
+        <div class="home-link-container">
+            <a href="index.html" class="home-link">Back to Home Page</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookingsContainer = document.getElementById('bookings-container');
+            const bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
+
+            if (bookings.length > 0) {
+                const bookingsGrid = document.createElement('div');
+                bookingsGrid.className = 'bookings-grid';
+
+                bookings.forEach(booking => {
+                    const card = document.createElement('div');
+                    card.className = 'booking-card';
+
+                    const sanitize = (str) => {
+                        if (!str) return '';
+                        const temp = document.createElement('div');
+                        temp.textContent = str;
+                        return temp.innerHTML;
+                    };
+
+                    const extras = Array.isArray(booking.extras) ? booking.extras.join(', ') : (booking.extras || 'None');
+
+                    card.innerHTML = `
+                        <h3>${sanitize(booking.destination)}</h3>
+                        <p><i class="ri-user-line"></i><strong>Name:</strong> ${sanitize(booking.name)}</p>
+                        <p><i class="ri-calendar-2-line"></i><strong>Dates:</strong> ${sanitize(booking.travel_date)} to ${sanitize(booking.return_date)}</p>
+                        <p><i class="ri-group-line"></i><strong>Travelers:</strong> ${sanitize(booking.travelers)}</p>
+                        <p><i class="ri-suitcase-line"></i><strong>Type:</strong> ${sanitize(booking.travel_type)}</p>
+                        <p><i class="ri-add-line"></i><strong>Extras:</strong> ${sanitize(extras)}</p>
+                        ${booking.message ? `<p><i class="ri-chat-1-line"></i><strong>Comments:</strong> ${sanitize(booking.message)}</p>` : ''}
+                    `;
+                    bookingsGrid.appendChild(card);
+                });
+                bookingsContainer.appendChild(bookingsGrid);
+            } else {
+                bookingsContainer.innerHTML = `
+                    <div class="no-bookings">
+                        <h3>You have no bookings yet.</h3>
+                        <p>Time to plan your next journey!</p>
+                        <a href="book.html">Book a Trip</a>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>
