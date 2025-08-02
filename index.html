@@ -9,11 +9,11 @@
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
         :root {
-          --primary-color: #3b82f6;
+          --primary-color: #3b82f6; /* A vibrant, professional blue */
           --primary-color-dark: #2563eb;
-          --secondary-color: #f3f4f6; 
-          --text-dark: #1f2937; 
-          --text-light: #6b7280; 
+          --secondary-color: #f3f4f6; /* Light gray for backgrounds */
+          --text-dark: #1f2937; /* Dark gray for text */
+          --text-light: #6b7280; /* Lighter text for descriptions */
           --white: #ffffff;
           --max-width: 1200px;
           --border-color: #e5e7eb;
@@ -149,6 +149,11 @@
           color: var(--text-dark);
           border-bottom-color: var(--primary-color);
         }
+        
+        /* Hide mobile-only buttons by default */
+        .nav__links .mobile-only {
+            display: none;
+        }
 
         .nav__btns {
           display: flex;
@@ -161,7 +166,7 @@
           display: grid;
           place-content: center;
           padding-top: 5rem;
-          background-image: url('images/background.jpg');
+          background-image: linear-gradient(to top, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0) 100%), url('images/background.jpg');
           background-size: cover;
           background-position: center center;
         }
@@ -395,6 +400,17 @@
           .nav__links.open {
             display: flex;
           }
+          
+          /* Show mobile-only buttons on small screens */
+          .nav__links .mobile-only {
+            display: block;
+            width: 100%;
+          }
+          
+          .nav__links .mobile-only .btn {
+            width: 100%;
+            text-align: center;
+          }
 
           .nav__menu__btn {
             display: block;
@@ -429,6 +445,8 @@
           <li><a href="#destinations">DESTINATIONS</a></li>
           <li><a href="#packages">PACKAGES</a></li>
           <li><a href="#contact">CONTACT</a></li>
+          <li class="mobile-only"><a href="book.html"><button class="btn">BOOK TRIP</button></a></li>
+          <li class="mobile-only"><a href="checkout.html"><button class="btn">MY BOOKINGS</button></a></li>
         </ul>
         <div class="nav__btns">
               <a href="book.html"><button class="btn">BOOK TRIP</button></a>
@@ -572,7 +590,7 @@
     </footer>
 
     <script>
-      // message after submit
+      // Script to show a success message on contact form submission
       const contactForm = document.getElementById('contact-form');
       const contactResponse = document.getElementById('contact-response');
       contactForm.addEventListener('submit', function (event) {
@@ -598,9 +616,10 @@
               const destination = button.dataset.destination;
               const price = button.dataset.price;
               
-              //store package detail
+              // Store the selected package details in localStorage
               localStorage.setItem('selectedPackage', JSON.stringify({ destination, price }));
               
+              // Redirect to the booking page
               window.location.href = 'book.html';
           });
       });

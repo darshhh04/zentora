@@ -16,6 +16,8 @@
             --text-light: #6b7280;
             --white: #ffffff;
             --border-color: #e5e7eb;
+            --danger-color: #ef4444;
+            --danger-color-dark: #dc2626;
             --success-bg: #dbeafe;
             --success-text: #1e40af;
         }
@@ -56,10 +58,23 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         .booking-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .delete-btn:hover {
+            color: var(--danger-color);
         }
         .card-content {
             padding: 25px;
@@ -72,6 +87,7 @@
             margin-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
+            padding-right: 30px; /* Space for delete button */
         }
         .booking-card p {
             color: var(--text-light);
@@ -153,7 +169,7 @@
             margin-top: 40px;
         }
         
-        /* Payment Modal */
+        /* Modal Styles */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -247,6 +263,28 @@
             margin-top: 1rem;
             display: none;
         }
+        
+        /* Delete Confirmation Modal */
+        #delete-confirm-modal .modal-body p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        .btn-danger:hover {
+            background-color: var(--danger-color-dark);
+        }
+        .btn-secondary {
+            background-color: var(--text-light);
+        }
     </style>
 </head>
 <body>
@@ -266,12 +304,12 @@
         </div>
     </div>
 
-    <!-- Payment Modal Structure -->
+    <!-- Payment Modal -->
     <div class="modal-overlay" id="payment-modal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Complete Your Payment</h3>
-                <i class="ri-close-line close-modal" id="close-modal-btn"></i>
+                <i class="ri-close-line close-modal" id="close-payment-modal-btn"></i>
             </div>
             <div class="modal-body">
                 <p class="payment-amount">Total Amount: <strong id="payment-total"></strong></p>
@@ -292,99 +330,143 @@
             </div>
         </div>
     </div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-confirm-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirm Deletion</h3>
+                 <i class="ri-close-line close-modal" id="close-delete-modal-btn"></i>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this booking?</p>
+                <div class="modal-actions">
+                    <button id="confirm-delete-btn" class="btn btn-danger">Yes, Delete</button>
+                    <button id="cancel-delete-btn" class="btn btn-secondary">No, Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const bookingsContainer = document.getElementById('bookings-container');
-            const bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
+            const paymentModal = document.getElementById('payment-modal');
+            const deleteModal = document.getElementById('delete-confirm-modal');
+            let bookingIndexToDelete = null;
 
-            if (bookings.length > 0) {
-                const bookingsGrid = document.createElement('div');
-                bookingsGrid.className = 'bookings-grid';
+            function renderBookings() {
+                const bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
+                bookingsContainer.innerHTML = ''; // Clear existing content
 
-                bookings.forEach((booking, index) => {
-                    const card = document.createElement('div');
-                    card.className = 'booking-card';
+                if (bookings.length > 0) {
+                    const bookingsGrid = document.createElement('div');
+                    bookingsGrid.className = 'bookings-grid';
 
-                    const sanitize = (str) => {
-                        if (!str) return '';
-                        const temp = document.createElement('div');
-                        temp.textContent = str;
-                        return temp.innerHTML;
-                    };
+                    bookings.forEach((booking, index) => {
+                        const card = document.createElement('div');
+                        card.className = 'booking-card';
 
-                    const extras = Array.isArray(booking.extras) ? booking.extras.join(', ') : (booking.extras || 'None');
+                        const sanitize = (str) => {
+                            if (!str) return '';
+                            const temp = document.createElement('div');
+                            temp.textContent = str;
+                            return temp.innerHTML;
+                        };
 
-                    card.innerHTML = `
-                        <div class="card-content">
-                            <h3>${sanitize(booking.destination)}</h3>
-                            <p><i class="ri-user-line"></i><strong>Name:</strong> ${sanitize(booking.name)}</p>
-                            <p><i class="ri-calendar-2-line"></i><strong>Dates:</strong> ${sanitize(booking.travel_date)} to ${sanitize(booking.return_date)}</p>
-                            <p><i class="ri-group-line"></i><strong>Travelers:</strong> ${sanitize(booking.travelers)}</p>
-                            <p><i class="ri-suitcase-line"></i><strong>Type:</strong> ${sanitize(booking.travel_type)}</p>
-                            <p><i class="ri-add-line"></i><strong>Extras:</strong> ${sanitize(extras)}</p>
-                            ${booking.message ? `<p><i class="ri-chat-1-line"></i><strong>Comments:</strong> ${sanitize(booking.message)}</p>` : ''}
-                        </div>
-                        <div class="card-footer">
-                            <span class="price">$${booking.price}</span>
-                            <button class="payment-btn" data-price="${booking.price}" data-index="${index}">Proceed to Payment</button>
+                        const extras = Array.isArray(booking.extras) ? booking.extras.join(', ') : (booking.extras || 'None');
+
+                        card.innerHTML = `
+                            <i class="ri-close-line delete-btn" data-index="${index}"></i>
+                            <div class="card-content">
+                                <h3>${sanitize(booking.destination)}</h3>
+                                <p><i class="ri-user-line"></i><strong>Name:</strong> ${sanitize(booking.name)}</p>
+                                <p><i class="ri-calendar-2-line"></i><strong>Dates:</strong> ${sanitize(booking.travel_date)} to ${sanitize(booking.return_date)}</p>
+                                <p><i class="ri-group-line"></i><strong>Travelers:</strong> ${sanitize(booking.travelers)}</p>
+                                <p><i class="ri-suitcase-line"></i><strong>Type:</strong> ${sanitize(booking.travel_type)}</p>
+                                <p><i class="ri-add-line"></i><strong>Extras:</strong> ${sanitize(extras)}</p>
+                                ${booking.message ? `<p><i class="ri-chat-1-line"></i><strong>Comments:</strong> ${sanitize(booking.message)}</p>` : ''}
+                            </div>
+                            <div class="card-footer">
+                                <span class="price">$${booking.price}</span>
+                                <button class="payment-btn" data-price="${booking.price}">Proceed to Payment</button>
+                            </div>
+                        `;
+                        bookingsGrid.appendChild(card);
+                    });
+                    bookingsContainer.appendChild(bookingsGrid);
+                } else {
+                    bookingsContainer.innerHTML = `
+                        <div class="no-bookings">
+                            <h3>You have no bookings yet.</h3>
+                            <p>Time to plan your next journey!</p>
+                            <a href="book.html">Book a Trip</a>
                         </div>
                     `;
-                    bookingsGrid.appendChild(card);
+                }
+                attachEventListeners();
+            }
+            
+            function attachEventListeners() {
+                // Payment Modal Listeners
+                document.querySelectorAll('.payment-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        document.getElementById('payment-total').textContent = `$${this.dataset.price}`;
+                        paymentModal.classList.add('active');
+                    });
                 });
-                bookingsContainer.appendChild(bookingsGrid);
-            } else {
-                bookingsContainer.innerHTML = `
-                    <div class="no-bookings">
-                        <h3>You have no bookings yet.</h3>
-                        <p>Time to plan your next journey!</p>
-                        <a href="book.html">Book a Trip</a>
-                    </div>
-                `;
+
+                // Delete Button Listeners
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        bookingIndexToDelete = parseInt(this.dataset.index, 10);
+                        deleteModal.classList.add('active');
+                    });
+                });
             }
 
-            // Payment Modal Logic
-            const paymentModal = document.getElementById('payment-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const paymentForm = document.getElementById('payment-form');
-            const paymentTotal = document.getElementById('payment-total');
-            const paymentSuccessMsg = document.getElementById('payment-success');
+            // Initial Render
+            renderBookings();
 
-            document.querySelectorAll('.payment-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const price = this.dataset.price;
-                    paymentTotal.textContent = `$${price}`;
-                    paymentModal.classList.add('active');
-                });
-            });
-
-            closeModalBtn.addEventListener('click', () => {
-                paymentModal.classList.remove('active');
-                paymentSuccessMsg.style.display = 'none';
-                paymentForm.style.display = 'block';
-            });
+            // Modal Closing Logic
+            const closePaymentModalBtn = document.getElementById('close-payment-modal-btn');
+            const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
+            const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
             
-            paymentModal.addEventListener('click', (e) => {
-                if (e.target === paymentModal) {
-                    paymentModal.classList.remove('active');
-                    paymentSuccessMsg.style.display = 'none';
-                    paymentForm.style.display = 'block';
-                }
-            });
+            function closeModal(modal) {
+                modal.classList.remove('active');
+            }
 
+            closePaymentModalBtn.addEventListener('click', () => closeModal(paymentModal));
+            closeDeleteModalBtn.addEventListener('click', () => closeModal(deleteModal));
+            cancelDeleteBtn.addEventListener('click', () => closeModal(deleteModal));
+
+            // Payment Form Logic
+            const paymentForm = document.getElementById('payment-form');
             paymentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                const paymentSuccessMsg = document.getElementById('payment-success');
                 paymentForm.style.display = 'none';
                 paymentSuccessMsg.style.display = 'block';
                 
-                // After 3 seconds, close the modal
                 setTimeout(() => {
-                    paymentModal.classList.remove('active');
-                    // Reset form for next time
+                    closeModal(paymentModal);
                     paymentForm.style.display = 'block';
                     paymentSuccessMsg.style.display = 'none';
                     paymentForm.reset();
                 }, 3000);
+            });
+            
+            // Confirm Delete Logic
+            document.getElementById('confirm-delete-btn').addEventListener('click', () => {
+                if (bookingIndexToDelete !== null) {
+                    let bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
+                    bookings.splice(bookingIndexToDelete, 1); // Remove the booking
+                    localStorage.setItem('tripBookings', JSON.stringify(bookings));
+                    bookingIndexToDelete = null;
+                    closeModal(deleteModal);
+                    renderBookings(); // Re-render the bookings on the page
+                }
             });
         });
     </script>
