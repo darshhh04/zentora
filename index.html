@@ -9,11 +9,11 @@
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
         :root {
-          --primary-color: #3b82f6; /* A vibrant, professional blue */
+          --primary-color: #3b82f6; 
           --primary-color-dark: #2563eb;
-          --secondary-color: #f3f4f6; /* Light gray for backgrounds */
-          --text-dark: #1f2937; /* Dark gray for text */
-          --text-light: #6b7280; /* Lighter text for descriptions */
+          --secondary-color: #f3f4f6; 
+          --text-dark: #1f2937; 
+          --text-light: #6b7280; 
           --white: #ffffff;
           --max-width: 1200px;
           --border-color: #e5e7eb;
@@ -150,7 +150,7 @@
           border-bottom-color: var(--primary-color);
         }
         
-        /* Hide mobile-only buttons by default */
+         /* mobile buttons */
         .nav__links .mobile-only {
             display: none;
         }
@@ -189,7 +189,6 @@
           line-height: 1.2;
         }
 
-        /* Modern Light Cards */
         .light-card {
             background-color: var(--white);
             border-radius: 20px;
@@ -401,7 +400,7 @@
             display: flex;
           }
           
-          /* Show mobile-only buttons on small screens */
+          /* for small screens */
           .nav__links .mobile-only {
             display: block;
             width: 100%;
@@ -590,7 +589,7 @@
     </footer>
 
     <script>
-      // Script to show a success message on contact form submission
+      // succesfull msg after submit
       const contactForm = document.getElementById('contact-form');
       const contactResponse = document.getElementById('contact-response');
       contactForm.addEventListener('submit', function (event) {
@@ -616,7 +615,7 @@
               const destination = button.dataset.destination;
               const price = button.dataset.price;
               
-              // Store the selected package details in localStorage
+              // store in localStorage
               localStorage.setItem('selectedPackage', JSON.stringify({ destination, price }));
               
               // Redirect to the booking page

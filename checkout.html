@@ -87,7 +87,7 @@
             margin-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
-            padding-right: 30px; /* Space for delete button */
+            padding-right: 30px; 
         }
         .booking-card p {
             color: var(--text-light);
@@ -296,7 +296,7 @@
         </div>
 
         <div id="bookings-container">
-            <!-- Bookings will be dynamically inserted here by JavaScript -->
+            <!-- booking will show here -->
         </div>
 
         <div class="home-link-container">
@@ -357,7 +357,7 @@
 
             function renderBookings() {
                 const bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
-                bookingsContainer.innerHTML = ''; // Clear existing content
+                bookingsContainer.innerHTML = ''; 
 
                 if (bookings.length > 0) {
                     const bookingsGrid = document.createElement('div');
@@ -408,7 +408,7 @@
             }
             
             function attachEventListeners() {
-                // Payment Modal Listeners
+                
                 document.querySelectorAll('.payment-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         document.getElementById('payment-total').textContent = `$${this.dataset.price}`;
@@ -416,7 +416,7 @@
                     });
                 });
 
-                // Delete Button Listeners
+                // Delete Button 
                 document.querySelectorAll('.delete-btn').forEach(button => {
                     button.addEventListener('click', function() {
                         bookingIndexToDelete = parseInt(this.dataset.index, 10);
@@ -428,7 +428,7 @@
             // Initial Render
             renderBookings();
 
-            // Modal Closing Logic
+            // Modal Closing
             const closePaymentModalBtn = document.getElementById('close-payment-modal-btn');
             const closeDeleteModalBtn = document.getElementById('close-delete-modal-btn');
             const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
@@ -441,7 +441,7 @@
             closeDeleteModalBtn.addEventListener('click', () => closeModal(deleteModal));
             cancelDeleteBtn.addEventListener('click', () => closeModal(deleteModal));
 
-            // Payment Form Logic
+            // Payment Form 
             const paymentForm = document.getElementById('payment-form');
             paymentForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -457,15 +457,15 @@
                 }, 3000);
             });
             
-            // Confirm Delete Logic
+            // Confirm Delete 
             document.getElementById('confirm-delete-btn').addEventListener('click', () => {
                 if (bookingIndexToDelete !== null) {
                     let bookings = JSON.parse(localStorage.getItem('tripBookings')) || [];
-                    bookings.splice(bookingIndexToDelete, 1); // Remove the booking
+                    bookings.splice(bookingIndexToDelete, 1); 
                     localStorage.setItem('tripBookings', JSON.stringify(bookings));
                     bookingIndexToDelete = null;
                     closeModal(deleteModal);
-                    renderBookings(); // Re-render the bookings on the page
+                    renderBookings(); 
                 }
             });
         });
